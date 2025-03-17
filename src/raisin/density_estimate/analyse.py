@@ -1,6 +1,8 @@
 import numpy as np
 import scipy
 
+from density_estimate.literature import *
+
 #################
 # Fitting funcs #
 #################

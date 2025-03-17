@@ -24,7 +24,10 @@ dev-dependencies = []
 
 [tool.hatch.metadata]
 allow-direct-references = true
-density_estimate =  "cancer_prediction.cli:app"
+density-estimate =  "density_estimate.cli:app"
+
+[project.scripts]
+density-estimate = "density_estimate.cli:app"
 
 [tool.hatch.build.targets.wheel]
-packages = [{include = "src/raisin"}]
+packages = ["src/raisin/density_estimate"]
