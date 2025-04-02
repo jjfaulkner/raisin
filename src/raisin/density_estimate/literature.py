@@ -19,13 +19,13 @@ pos_2d_data = pd.read_csv('src/raisin/density_estimate/data/pos_2d_vs_n_das_expt
 # fitting smoothed splines to the data
 
 tck_ratio_i2d_ig = splrep(ratio_i2d_ig_data[0], ratio_i2d_ig_data[1], s = (len(ratio_i2d_ig_data[0]) - 2*np.sqrt(2*len(ratio_i2d_ig_data[0]))))
-ratio_i2d_ig = BSpline(*tck_ratio_i2d_ig)
+i2d_ig_spline = BSpline(*tck_ratio_i2d_ig)
 
 tck_fwhm_g = splrep(fwhm_g_data[0], fwhm_g_data[1], s = (len(fwhm_g_data[0]) - 2*np.sqrt(2*len(fwhm_g_data[0]))))
-fwhm_g = BSpline(*tck_fwhm_g)
+fwhm_g_spline = BSpline(*tck_fwhm_g)
 
 tck_pos_g = splrep(pos_g_data[0], pos_g_data[1], s = (len(pos_g_data[0]) - 2*np.sqrt(2*len(pos_g_data[0]))))
-pos_g = BSpline(*tck_pos_g)
+pos_g_spline = BSpline(*tck_pos_g)
 
 tck_pos_2d = splrep(pos_2d_data[0], pos_2d_data[1], s = (len(pos_2d_data[0]) - 2*np.sqrt(2*len(pos_2d_data[0]))))
-pos_2d = BSpline(*tck_pos_2d)
+pos_2d_spline = BSpline(*tck_pos_2d)
