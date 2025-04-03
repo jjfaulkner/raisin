@@ -10,15 +10,15 @@ import os
 
 # importing the data from Das
 
-ratio_i2d_ig_data = pd.read_csv('src/raisin/density_estimate/data/i_2d_i_g_vs_n_das_expt.txt', delimiter='\t', header=None)
-fwhm_g_data = pd.read_csv('src/raisin/density_estimate/data/fwhm_g_vs_n_das_expt.txt', delimiter='\t', header=None)
+ratio_i2d_ig_data = pd.read_csv('~/Documents/raisin/src/raisin/density_estimate/data/i_2d_i_g_vs_n_das_expt.txt', delimiter='\t', header=None)
+fwhm_g_data = pd.read_csv('~/Documents/raisin/src/raisin/density_estimate/data/fwhm_g_vs_n_das_expt.txt', delimiter='\t', header=None)
 
-pos_g_data = pd.read_csv('src/raisin/density_estimate/data/pos_g_vs_n_das_expt.txt', delimiter='\t', header=None)
-pos_2d_data = pd.read_csv('src/raisin/density_estimate/data/pos_2d_vs_n_das_expt.txt', delimiter='\t', header=None)
+pos_g_data = pd.read_csv('~/Documents/raisin/src/raisin/density_estimate/data/pos_g_vs_n_das_expt.txt', delimiter='\t', header=None)
+pos_2d_data = pd.read_csv('~/Documents/raisin/src/raisin/density_estimate/data/pos_2d_vs_n_das_expt.txt', delimiter='\t', header=None)
 
 # fitting smoothed splines to the data
 
-tck_ratio_i2d_ig = splrep(ratio_i2d_ig_data[0], ratio_i2d_ig_data[1], s = (len(ratio_i2d_ig_data[0]) - 2*np.sqrt(2*len(ratio_i2d_ig_data[0]))))
+tck_ratio_i2d_ig = splrep(ratio_i2d_ig_data[0], ratio_i2d_ig_data[1], s = 0.02 * (len(ratio_i2d_ig_data[0]) - 2*np.sqrt(2*len(ratio_i2d_ig_data[0]))))
 i2d_ig_spline = BSpline(*tck_ratio_i2d_ig)
 
 tck_fwhm_g = splrep(fwhm_g_data[0], fwhm_g_data[1], s = (len(fwhm_g_data[0]) - 2*np.sqrt(2*len(fwhm_g_data[0]))))

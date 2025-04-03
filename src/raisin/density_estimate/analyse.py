@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+import os
 
 from density_estimate.literature import *
 
@@ -65,5 +66,13 @@ def fit_i_2d_i_g(data):
     i_2d = data['fit_2d'][0]
     i2d_ig = i_2d / i_g
     solution_p = scipy.optimize.fsolve(lambda n: i2d_ig_spline(n) - i2d_ig, -1)
-    solution_n = scipy.optimize.fsolve(lambda n: pos_2d_spline(n) - i2d_ig, 1)
+    solution_n = scipy.optimize.fsolve(lambda n: i2d_ig_spline(n) - i2d_ig, 3)
     return solution_p, solution_n
+
+test = analyse('sample_data.txt', '\t')
+
+density = fit_i_2d_i_g(test)
+
+print(f"i_2d / i_g = {test['fit_2d'][0] / test['fit_g'][0]}")
+print(f"n_p = {density[0]}")
+print(f"n_n = {density[1]}")
