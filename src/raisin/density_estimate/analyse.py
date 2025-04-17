@@ -86,23 +86,23 @@ def fit_fwhm_g(data):
 # Estimate strain #
 ###################
 
-def predict_pos_g(n, p):
+def predict_pos_g(p, n):
     expected_shift_p = pos_g_spline(p/1e13)
     expected_shift_n = pos_g_spline(n/1e13)
     #solution_p = scipy.optimize.fsolve(lambda n: (pos_g_correction_slg_vectorised(n, 300, 0.13) - pos_g_correction_slg_vectorised(20, 300, 0.13)) - (pos_g - pos_si), -1)
     #solution_n = scipy.optimize.fsolve(lambda n: (pos_g_correction_slg_vectorised(n, 300, 0.13) - pos_g_correction_slg_vectorised(20, 300, 0.13)) - (pos_g - pos_si), 3)
     return expected_shift_p, expected_shift_n
 
-def predict_pos_2d(n, p):
+def predict_pos_2d(p, n):
     expected_shift_p = pos_2d_spline(p/1e13)
     expected_shift_n = pos_2d_spline(n/1e13)
     #solution_p = scipy.optimize.fsolve(lambda n: (pos_g_correction_slg_vectorised(n, 300, 0.13) - pos_g_correction_slg_vectorised(20, 300, 0.13)) - (pos_g - pos_si), -1)
     #solution_n = scipy.optimize.fsolve(lambda n: (pos_g_correction_slg_vectorised(n, 300, 0.13) - pos_g_correction_slg_vectorised(20, 300, 0.13)) - (pos_g - pos_si), 3)
     return expected_shift_p, expected_shift_n
 
-def get_strain(data, n, p):
-    pos_g_p_pred, pos_g_n_pred = predict_pos_g(n, p)
-    pos_2d_p_pred, pos_2d_n_pred = predict_pos_2d(n,p)
+def get_strain(data, p, n):
+    pos_g_p_pred, pos_g_n_pred = predict_pos_g(p, n)
+    pos_2d_p_pred, pos_2d_n_pred = predict_pos_2d(p,n)
 
     strain_g_p = (pos_g_p_pred - data['fit_g'][1]) / 23     # difference in predicted and
     strain_g_n = (pos_g_n_pred - data['fit_g'][1]) / 23     # measured positions divided by
@@ -112,7 +112,23 @@ def get_strain(data, n, p):
     strain_p = (strain_g_p + strain_2d_p) / 2
     strain_n = (strain_g_n + strain_2d_n) / 2
 
-    return strain_p, strain_n
+    strain_diff_p = strain_g_p - strain_2d_p # compare the differences in predictions of strain
+    strain_diff_n = strain_g_n - strain_2d_n # from G and 2D for p and n. Whichever is closer wins
+
+    return strain_p, strain_n, strain_diff_p, strain_diff_n
+
+####################
+# Determine p or n #
+####################
+
+def determine_p_or_n(strain_diff_p, strain_diff_n): # returns -1 for p, 1 for n
+    if strain_diff_p < strain_diff_n:
+        return -1
+    else:
+        return 1
+    
+# this has some flaws because FWHM(G) and I(2D)/I(G) give quite different n values. 
+# This leads to 
 
 ##########
 # Script #
@@ -138,8 +154,14 @@ print(f"n_n = {density_width[1]}")
 avg_p = (density_iratio[0] + density_width[0])/2
 avg_n = (density_iratio[1] + density_width[1])/2
 
-strain = get_strain(test, avg_n, avg_p)
+#strain = get_strain(test, avg_n, avg_p)
+strain = get_strain(test, density_width[0], density_width[1])
 
 print('Strain')
 print(f"Strain [p] = {strain[0]}")
 print(f"Strain [n] = {strain[1]}")
+print(f"Strain difference [p] = {strain[2]}")
+print(f"Strain difference [n] = {strain[3]}")
+
+print('p or n')
+print(f"prediction = {determine_p_or_n(strain[2], strain[3])}")
